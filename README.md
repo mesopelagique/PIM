@@ -24,6 +24,24 @@ $vCard.saveToFile(Folder(...).file("eric-marchand.vcf"))
 $vCard.getFormattedString()
 ```
 
+### Embedding Images
+
+Instead of using url you could embedded images
+
+#### With files
+
+```4d
+$vCard.photo.embedFromFile(File("/path/to/file.png"))
+$vCard.logo.embedFromFile(File("/path/to/file.png"))
+```
+
+#### With base 64 data
+
+```4d
+$vCard.photo.embedFromString("iVBORw0KGgoAAAANSUhEUgAAA2..."; "image/png"')
+$vCard.logo.embedFromString("iVBORw0KGgoAAAANSUhEUgAAA2..."; "image/png")
+```
+
 ### Multiple Email, Fax, & Phone Examples
 
 ```4d
@@ -41,3 +59,7 @@ $vCard.cellPhone := New collection(\
     "312-555-1416"\
 )
 ```
+
+## Acknowledgements
+
+- very inspired from js library https://github.com/enesser/vCards-js
