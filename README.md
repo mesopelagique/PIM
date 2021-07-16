@@ -1,6 +1,10 @@
 # PIM
 
+## VCard
+
 VCard builder class
+
+### Create
 
 ```4d
 // create a new vCard
@@ -16,12 +20,24 @@ $vCard.workPhone := "312-555-1212"
 $vCard.title := "Software Developer"
 $vCard.url := "https://github.com/mesopelagique"
 $vCard.note := "Notes on Eric"
+```
 
-// save to file
+### save to file
+
+```4d
 $vCard.saveToFile(Folder(...).file("eric-marchand.vcf"))
+```
 
-// get as formatted string
+### get as formatted string
+
+```4d
 $vCard.getFormattedString()
+```
+
+### send it when responding to http request
+
+```4d
+$vCard.webSend("eric-marchand.vcf")
 ```
 
 ### Embedding Images
