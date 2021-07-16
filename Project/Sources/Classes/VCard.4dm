@@ -398,8 +398,24 @@ Function getFormattedString()->$formattedVCardString : Text
 	
 	// Save to file
 Function saveToFile($file : 4D:C1709.File)
-	$file.setText(This:C1470.getFormattedString(This:C1470); "UTF-8-no-bom"; Document with CRLF:K24:20)
+	$file.setText(This:C1470.getFormattedString(); "UTF-8-no-bom"; Document with CRLF:K24:20)
 	
+	// Send in http
+Function webSend($fileName : Text)
+	ARRAY TEXT:C222($fieldArray; 2)
+	$fieldArray{1}:="Content-Type"
+	$fieldArray{2}:="Content-Disposition"
+	ARRAY TEXT:C222($valueArray; 2)
+	If (Count parameters:C259>0)
+		$valueArray{1}:="text/vcard; name=\""+$fileName+"\""
+		$valueArray{2}:="inline; filename=\""+$fileName+"\""
+	Else 
+		$valueArray{1}:="text/vcard; name=\"file.vcard\""
+		$valueArray{2}:="inline; filename=\"file.vcard\""
+	End if 
+	
+	WEB SET HTTP HEADER:C660($fieldArray; $valueArray)
+	WEB SEND TEXT:C677(This:C1470.getFormattedString())
 	
 	// get major part of versio
 Function _getMajorVersion()->$majorVersion
