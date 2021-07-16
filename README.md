@@ -1,5 +1,7 @@
 # PIM
 
+personal information manager stuff
+
 ## VCard
 
 VCard builder class
