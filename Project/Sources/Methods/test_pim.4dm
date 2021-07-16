@@ -104,17 +104,13 @@ While (_.describe(".getFormattedString"))
 	End while 
 	
 	While (_.it("should format birthday as 20181201"))
-		var $birthdayValue : Text
-		$birthdayValue:=_getValueByFieldName("BDAY"; $lines); 
-		ASSERT:C1129($birthdayValue="20181201")
+		ASSERT:C1129(_getValueByFieldName("BDAY"; $lines)="20181201")
 	End while 
 	
 End while 
 
 While (_.it("should format anniversary as 20181201"))
-	var $anniversaryValue : Text
-	$anniversaryValue:=_getValueByFieldName("ANNIVERSARY"; $lines); 
-	ASSERT:C1129($anniversaryValue="20181201")
+	ASSERT:C1129(_getValueByFieldName("ANNIVERSARY"; $lines)="20181201")
 End while 
 
 While (_.it("should not crash when cellPhone is a large number, using 12345678900"))
@@ -143,8 +139,16 @@ While (_.it("should save to file"))
 	//ASSERT($testFileTmp.getText()=$testFile.getText()) // could not test without removing line REV:
 	
 	If (Shift down:C543)
-		SHOW ON DISK:C922($testFileTmp.platformPath)
+		// to test
+		If (Windows Ctrl down:C562)
+			// to import it
+			OPEN URL:C673($testFileTmp.platformPath)
+		Else 
+			// to reveal it
+			SHOW ON DISK:C922($testFileTmp.platformPath)
+		End if 
 	Else 
+		// clean
 		$testFileTmp.delete()
 	End if 
 End while 
