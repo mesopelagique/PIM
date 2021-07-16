@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><preferences stamp="3">
+	<com.4d>
+		<deployment>
+			<options/>
+		</deployment>
+		<web>
+			<standalone_server>
+				<configuration automatic_session_management="true"/>
+			</standalone_server>
+			<remote>
+				<configuration automatic_session_management="true"/>
+			</remote>
+		</web>
+		<compiler>
+			<options compilation_path="3" symbol_file="true"/>
+		</compiler>
+	</com.4d>
+</preferences>

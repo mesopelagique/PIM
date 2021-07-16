@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE base SYSTEM "http://www.4d.com/dtd/2007/base.dtd" >
+<base name="PIM" uuid="9C5C573969454D928B3276E0F7512E5E" collation_locale="en-gb">
+	<schema name="DEFAULT_SCHEMA"/>
+	<base_extra __stringCompHash="icu:68.1.0" __keywordBuildingHash="icu:68.1.0" package_name="PIM" structure_file_name="PIM" data_file_path=":PIM.4DD">
+		<journal_file journal_file_enabled="true"/>
+	</base_extra>
+</base>

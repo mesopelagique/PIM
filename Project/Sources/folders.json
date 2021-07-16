@@ -1,0 +1,32 @@
+{
+	"(Default Classes)": {},
+	"(Default Folder)": {
+		"groups": [
+			"(Default Classes)",
+			"(Default Forms)",
+			"(Default Project Methods)",
+			"(Default Tables)"
+		]
+	},
+	"(Default Forms)": {},
+	"(Default Project Methods)": {},
+	"(Default Tables)": {},
+	"compiler": {
+		"methods": [
+			"Compiler_Methods",
+			"Compiler_Variables"
+		]
+	},
+	"test": {
+		"methods": [
+			"_getValueByFieldName",
+			"onStartUp",
+			"test_pim"
+		]
+	},
+	"trash": {
+		"groups": [
+			"(Default Folder)"
+		]
+	}
+}
