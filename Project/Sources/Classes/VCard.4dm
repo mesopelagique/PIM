@@ -35,6 +35,25 @@ Function YYYYMMDD($date : Variant)->$formatted : Text
 			$formatted:=""
 	End case 
 	
+Function getFormattedName()->$formattedName : Text
+	
+	$formattedName:=This:C1470.formattedName
+	
+	If ($formattedName=Null:C1517)
+		$formattedName:=""
+		
+		var $name : Variant
+		For each ($name; New collection:C1472(This:C1470.firstName; This:C1470.middleName; This:C1470.lastName))
+			
+			If (Length:C16($formattedName)>0)
+				$formattedName:=$formattedName+" "
+			End if 
+			If ($name#Null:C1517)
+				$formattedName:=$formattedName+String:C10($name)
+			End if 
+		End for each 
+	End if 
+	
 Function getFormattedString()->$formattedVCardString : Text
 	var $vCard : Object
 	$vCard:=This:C1470
@@ -53,22 +72,7 @@ Function getFormattedString()->$formattedVCardString : Text
 	$formattedVCardString:=$formattedVCardString+"VERSION:"+$vCard.version+$nl
 	
 	$encodingPrefix:=Choose:C955($majorVersion>=4; ""; ";CHARSET=UTF-8")
-	$formattedName:=$vCard.formattedName
-	
-	If ($formattedName=Null:C1517)
-		$formattedName:=""
-		
-		var $name : Variant
-		For each ($name; New collection:C1472($vCard.firstName; $vCard.middleName; $vCard.lastName))
-			
-			If (Length:C16($formattedName)>0)
-				$formattedName:=$formattedName+" "
-			End if 
-			If ($name#Null:C1517)
-				$formattedName:=$formattedName+$name
-			End if 
-		End for each 
-	End if 
+	$formattedName:=$vCard.getFormattedName()
 	
 	$formattedVCardString:=$formattedVCardString+"FN"+$encodingPrefix+":"+This:C1470.e($formattedName)+$nl
 	$formattedVCardString:=$formattedVCardString+"N"+$encodingPrefix+":"+\
@@ -111,7 +115,7 @@ Function getFormattedString()->$formattedVCardString : Text
 				: ($majorVersion=3)
 					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";type=HOME,INTERNET:"+This:C1470.e($address)+$nl
 				Else 
-					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";type=HOME;INTERNET:"+This:C1470.e($address)+$nl
+					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";HOME;INTERNET:"+This:C1470.e($address)+$nl
 			End case 
 		End for each 
 	End if 
@@ -128,9 +132,9 @@ Function getFormattedString()->$formattedVCardString : Text
 				: ($majorVersion>=4)
 					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";type=WORK:"+This:C1470.e($address)+$nl
 				: ($majorVersion=3)
-					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";type=HOME,INTERNET:"+This:C1470.e($address)+$nl
+					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";type=WORK,INTERNET:"+This:C1470.e($address)+$nl
 				Else 
-					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";type=HOME;INTERNET:"+This:C1470.e($address)+$nl
+					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";WORK;INTERNET:"+This:C1470.e($address)+$nl
 			End case 
 		End for each 
 		
@@ -148,9 +152,9 @@ Function getFormattedString()->$formattedVCardString : Text
 				: ($majorVersion>=4)
 					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";type=OTHER:"+This:C1470.e($address)+$nl
 				: ($majorVersion=3)
-					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";type=HOME,INTERNET:"+This:C1470.e($address)+$nl
+					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";type=OTHER,INTERNET:"+This:C1470.e($address)+$nl
 				Else 
-					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";type=HOME;INTERNET:"+This:C1470.e($address)+$nl
+					$formattedVCardString:=$formattedVCardString+"EMAIL"+$encodingPrefix+";OTHER;INTERNET:"+This:C1470.e($address)+$nl
 			End case 
 		End for each 
 		
