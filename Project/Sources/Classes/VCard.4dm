@@ -348,6 +348,7 @@ Function webSend($fileName : Text)
 	$fieldArray{1}:="Content-Type"
 	$fieldArray{2}:="Content-Disposition"
 	
+	var $fileNameTmp : Text
 	If (Count parameters:C259>0)
 		$fileNameTmp:=$fileName
 	Else 

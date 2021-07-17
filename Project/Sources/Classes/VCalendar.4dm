@@ -14,13 +14,13 @@ Function getFormattedString()->$formattedString : Text
 	$formattedString:=$formattedString+"VERSION:"+This:C1470.version+$nl
 	//PRODID:-  //hacksw/handcal//NONSGML v1.0//EN
 	
-	If ((This:C1470.prodID#Null:C1517) & ($majorVersion>=2))
-		$formattedVCardString:=$formattedVCardString+"PRODID:"+This:C1470.e(This:C1470.prodID)+$nl
+	If (This:C1470.prodID#Null:C1517)
+		$formattedString:=$formattedString+"PRODID:"+This:C1470.e(This:C1470.prodID)+$nl
 	End if 
 	
 	var $event : Object
 	For each ($event; This:C1470.events)
-		$formattedVCardString:=$formattedVCardString+$event.getFormattedString()
+		$formattedString:=$formattedString+$event.getFormattedString()
 	End for each 
 	
 	$formattedString:=$formattedString+"END:VCALENDAR"+$nl
