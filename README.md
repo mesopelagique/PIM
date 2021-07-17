@@ -9,7 +9,6 @@ VCard builder class
 ### Create
 
 ```4d
-// create a new vCard
 $vCard = PIM.VCard.new()
 
 // set properties
@@ -85,9 +84,12 @@ VCalendar builder class
 ### Create
 
 ```4d
-// create a new vCard
 $calendar = PIM.VCalendar.new()
 ```
+
+### Add events
+
+TODO
 
 ### get as formatted string
 
