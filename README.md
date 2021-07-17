@@ -78,6 +78,34 @@ $vCard.cellPhone := New collection(\
 )
 ```
 
+## VCalendar(🚧)
+
+VCalendar builder class 
+
+### Create
+
+```4d
+// create a new vCard
+$calendar = PIM.VCalendar.new()
+```
+
+### get as formatted string
+
+```4d
+$calendar.getFormattedString()
+```
+
+### send it when responding to http request
+
+```4d
+$calendar.webSend("eric-marchand.ics")
+```
+
+## TODO
+
+- Fix format VCard bugs, seems to not import well with macOS calendar app
+- Implement calendar event formatting
+
 ## Acknowledgements
 
-- very inspired from js library https://github.com/enesser/vCards-js
+- vcard: very inspired from js library https://github.com/enesser/vCards-js
