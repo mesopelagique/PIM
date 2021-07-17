@@ -1,69 +1,14 @@
+Class extends PIMObject
+
 Class constructor
+	Super:C1705()
 	This:C1470.version:="3.0"
-	This:C1470.photo:=cs:C1710.Photo.new()
-	This:C1470.logo:=cs:C1710.Photo.new()
+	This:C1470.photo:=PIM.Photo.new("PHOTO")
+	This:C1470.logo:=PIM.Photo.new("LOGO")
 	This:C1470.socialUrls:=New object:C1471("facebook"; ""; "linkedIn"; ""; "twitter"; ""; "flickr"; "")
-	This:C1470.homeAddress:=cs:C1710.MailingAddress.new()
-	This:C1470.workAddress:=cs:C1710.MailingAddress.new()
+	This:C1470.homeAddress:=PIM.MailingAddress.new("HOME")
+	This:C1470.workAddress:=PIM.MailingAddress.new("WORK")
 	
-	// constant
-Function nl()->$nl : Text
-	$nl:="\r\n"
-	
-	
-	// formatting of objects
-	
-	
-Function getFormattedPhoto($photoType : Text; $url : Text; $mediaType : Text; $base64 : Boolean; $majorVersion : Integer)->$formattedPhoto : Text
-	
-	var $nl : Text
-	$nl:=This:C1470.nl()
-	var $params : Text
-	Case of 
-		: ($majorVersion>=4)
-			$params:=Choose:C955($base64; ";ENCODING=b;MEDIATYPE=image/"; ";MEDIATYPE=image/")
-		: ($majorVersion=3)
-			$params:=Choose:C955($base64; ";ENCODING=b;TYPE="; ";TYPE=")
-		Else 
-			$params:=Choose:C955($base64; ";ENCODING=BASE64; "; ";")
-	End case 
-	
-	$formattedPhoto:=$photoType+$params+$mediaType+":"+This:C1470.e($url)+$nl
-	
-Function getFormattedAddress($encodingPrefix : Text; $address : Object; $majorVersion : Integer)->$formattedAddress : Text
-	var $nl : Text
-	$nl:=This:C1470.nl()
-	
-	$formattedAddress:=""
-	
-	If (($address.details.label#Null:C1517) | \
-		($address.details.street#Null:C1517) | \
-		($address.details.city#Null:C1517) | \
-		($address.details.stateProvince#Null:C1517) | \
-		($address.details.postalCode#Null:C1517) | \
-		($address.details.countryRegion#Null:C1517))
-		
-		If ($majorVersion>=4)
-			$formattedAddress:="ADR"+$encodingPrefix+";TYPE="+$address.type+\
-				(Choose:C955($address.details.label#Null:C1517; ";LABEL=\""+This:C1470.e($address.details.label)+"\""; ""))+":;;"+\
-				This:C1470.e($address.details.street)+";"+\
-				This:C1470.e($address.details.city)+";"+\
-				This:C1470.e($address.details.stateProvince)+";"+\
-				This:C1470.e($address.details.postalCode)+";"+\
-				This:C1470.e($address.details.countryRegion)+$nl
-		Else 
-			If ($address.details.label#Null:C1517)
-				$formattedAddress:="LABEL"+$encodingPrefix+";TYPE="+$address.type+":"+This:C1470.e($address.details.label)+$nl
-			End if 
-			$formattedAddress:=$formattedAddress+"ADR"+$encodingPrefix+";TYPE="+$address.type+":;;"+\
-				This:C1470.e($address.details.street)+";"+\
-				This:C1470.e($address.details.city)+";"+\
-				This:C1470.e($address.details.stateProvince)+";"+\
-				This:C1470.e($address.details.postalCode)+";"+\
-				This:C1470.e($address.details.countryRegion)+$nl
-		End if 
-		
-	End if 
 	
 Function YYYYMMDD($date : Variant)->$formatted : Text
 	
@@ -212,11 +157,11 @@ Function getFormattedString()->$formattedVCardString : Text
 	End if 
 	
 	If ($vCard.logo.url#Null:C1517)
-		$formattedVCardString:=$formattedVCardString+This:C1470.getFormattedPhoto("LOGO"; $vCard.logo.url; $vCard.logo.mediaType; $vCard.logo.base64; $majorVersion)
+		$formattedVCardString:=$formattedVCardString+$vCard.logo.getFormattedString($majorVersion)
 	End if 
 	
 	If ($vCard.photo.url#Null:C1517)
-		$formattedVCardString:=$formattedVCardString+This:C1470.getFormattedPhoto("PHOTO"; $vCard.photo.url; $vCard.photo.mediaType; $vCard.photo.base64; $majorVersion)
+		$formattedVCardString:=$formattedVCardString+$vCard.photo.getFormattedString($majorVersion)
 	End if 
 	
 	If ($vCard.cellPhone#Null:C1517)
@@ -329,9 +274,9 @@ Function getFormattedString()->$formattedVCardString : Text
 	End if 
 	
 	var $addressObject : Object
-	For each ($addressObject; New collection:C1472(New object:C1471("details"; $vCard.homeAddress; "type"; "HOME"); New object:C1471("details"; $vCard.workAddress; "type"; "WORK")))
+	For each ($addressObject; New collection:C1472($vCard.homeAddress; $vCard.workAddress))
 		
-		$formattedVCardString:=$formattedVCardString+This:C1470.getFormattedAddress($encodingPrefix; $addressObject; $majorVersion)
+		$formattedVCardString:=$formattedVCardString+$addressObject.getFormattedString($encodingPrefix; $majorVersion)
 		
 	End for each 
 	
@@ -388,7 +333,8 @@ Function getFormattedString()->$formattedVCardString : Text
 		End if 
 	End if 
 	
-	$formattedVCardString:=$formattedVCardString+"REV:"+String:C10(Current date:C33; ISO date:K1:8)+$nl
+	$formattedVCardString:=$formattedVCardString+"REV:"+Replace string:C233(Replace string:C233(String:C10(Current date:C33; ISO date GMT:K1:10; Current time:C178); "-"; ""); ":"; "")+$nl
+	
 	If (Bool:C1537($vCard.isOrganization))
 		$formattedVCardString:=$formattedVCardString+"X-ABShowAs:COMPANY"+$nl
 	End if 
@@ -425,22 +371,3 @@ Function _getMajorVersion()->$majorVersion
 		$majorVersion:=4
 	End if 
 	
-	// encode values
-Function e($value : Variant)->$result : Text
-	If ($value#Null:C1517)
-		Case of 
-			: (Value type:C1509($value)=Is collection:K8:32)
-				$value:=""+JSON Stringify:C1217($value)
-			: (Value type:C1509($value)=Is object:K8:27)
-				$value:=""+JSON Stringify:C1217($value)
-			Else 
-				$value:=""+String:C10($value)
-		End case 
-		
-		$result:=Replace string:C233($value; "\n"; "\\n")
-		$result:=Replace string:C233($result; ","; "\\,")
-		$result:=Replace string:C233($result; ";"; "\\;")
-		
-	Else 
-		$result:=""
-	End if 

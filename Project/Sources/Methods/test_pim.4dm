@@ -70,7 +70,7 @@ While (_.describe(".getFormattedString"))
 		
 		_.expect($lines.length).to(_.beGreaterThan(0))
 		If ($lines.length>0)
-			_.expect(Position:C15("BEGIN:VCARD"; $lines[0])).to(_.beEqualTo(1))
+			_.expect($lines[0]).to(_.beginWith("BEGIN:VCARD"))
 		End if 
 	End while 
 	
@@ -82,7 +82,7 @@ While (_.describe(".getFormattedString"))
 			If (Length:C16($line)>0)
 				$segments:=Split string:C1554($line; ":")
 				
-				ASSERT:C1129(($segments.length>=2) | (Position:C15(";"; $segments[0])=1))
+				_.expect(($segments.length>=2) | (Position:C15(";"; $segments[0])=1)).to(_.beTrue())
 				
 			End if 
 		End for each 
@@ -100,17 +100,17 @@ While (_.describe(".getFormattedString"))
 	
 	While (_.it("should encode numeric input as strings"))
 		$testCard.workAddress.postalCode:=12345
-		$testCard.getFormattedString()  // must not raised? // TODO better catching
+		_.expect($testCard.getFormattedString()).to(_.contain("12345"))  // must not raised? // TODO better catching
 	End while 
 	
 	While (_.it("should format birthday as 20181201"))
-		ASSERT:C1129(_getValueByFieldName("BDAY"; $lines)="20181201")
+		_.expect(_getValueByFieldName("BDAY"; $lines)).to(_.beEqualTo("20181201"))
 	End while 
 	
 End while 
 
 While (_.it("should format anniversary as 20181201"))
-	ASSERT:C1129(_getValueByFieldName("ANNIVERSARY"; $lines)="20181201")
+	_.expect(_getValueByFieldName("ANNIVERSARY"; $lines)).to(_.beEqualTo("20181201"))
 End while 
 
 While (_.it("should not crash when cellPhone is a large number, using 12345678900"))
@@ -119,11 +119,14 @@ While (_.it("should not crash when cellPhone is a large number, using 1234567890
 End while 
 
 While (_.it("should have UID set as test value: "+$TEST_VALUE_UID))
-	ASSERT:C1129(_getValueByFieldName("UID"; $lines)=$TEST_VALUE_UID)
+	_.expect(_getValueByFieldName("UID"; $lines)).to(_.beEqualTo($TEST_VALUE_UID))
 End while 
 
 While (_.it("should end with END:VCARD"))
-	ASSERT:C1129(($lines.length>2) & ($lines[$lines.length-2]="END:VCARD"))  // TODO two assert to not failed
+	_.expect($lines.length).to(_.beGreaterThan(2))
+	If ($lines.length>2)
+		_.expect($lines[$lines.length-2]).to(_.beEqualTo("END:VCARD"))
+	End if 
 End while 
 
 While (_.it("should save to file"))

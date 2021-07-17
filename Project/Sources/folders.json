@@ -21,7 +21,8 @@
 		"methods": [
 			"_getValueByFieldName",
 			"onStartUp",
-			"test_pim"
+			"test_pim",
+			"test_web"
 		]
 	},
 	"trash": {

@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><preferences stamp="3">
+<?xml version="1.0" encoding="UTF-8"?><preferences stamp="4">
 	<com.4d>
 		<deployment>
 			<options/>
 		</deployment>
 		<web>
 			<standalone_server>
-				<configuration automatic_session_management="true"/>
+				<configuration automatic_session_management="true" https_port_number="8443" port_number="8080"/>
 			</standalone_server>
 			<remote>
 				<configuration automatic_session_management="true"/>
