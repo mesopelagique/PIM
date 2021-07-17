@@ -13,6 +13,7 @@
 	"(Default Tables)": {},
 	"Calendar": {
 		"classes": [
+			"VAlarm",
 			"VCalendar",
 			"VEvent",
 			"VFreeBusy",

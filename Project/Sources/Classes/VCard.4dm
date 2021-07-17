@@ -327,7 +327,7 @@ Function getFormattedString()->$formattedVCardString : Text
 		End if 
 	End if 
 	
-	$formattedVCardString:=$formattedVCardString+"REV:"+Replace string:C233(Replace string:C233(String:C10(Current date:C33; ISO date GMT:K1:10; Current time:C178); "-"; ""); ":"; "")+$nl
+	$formattedVCardString:=$formattedVCardString+"REV:"+This:C1470.getFormattedDateTime(Current date:C33; Current time:C178)+$nl
 	
 	If (Bool:C1537($vCard.isOrganization))
 		$formattedVCardString:=$formattedVCardString+"X-ABShowAs:COMPANY"+$nl

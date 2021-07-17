@@ -49,3 +49,6 @@ Function YYYYMMDD($date : Variant)->$formatted : Text
 			$formatted:=""
 	End case 
 	
+Function getFormattedDateTime($date : Date; $time : Time)->$formatted : Text
+	$formatted:=Replace string:C233(Replace string:C233(String:C10($date; ISO date GMT:K1:10; $time); "-"; ""); ":"; "")
+	
