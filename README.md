@@ -1,6 +1,12 @@
 # PIM
 
-personal information manager stuff
+[![language][code-shield]][code-url]
+[![language-top][code-top]][code-url]
+![code-size][code-size]
+[![license][license-shield]][license-url]
+[![discord][discord-shield]][discord-url]
+
+personal information manager stuff, ie. VCard and VCalendar
 
 ## VCard
 
@@ -111,3 +117,14 @@ $calendar.webSend("eric-marchand.ics")
 ## Acknowledgements
 
 - vcard: very inspired from js library https://github.com/enesser/vCards-js
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[code-shield]: https://img.shields.io/static/v1?label=language&message=4d&color=blue
+[code-top]: https://img.shields.io/github/languages/top/mesopelagique/PIM.svg
+[code-size]: https://img.shields.io/github/languages/code-size/mesopelagique/PIM.svg
+[code-url]: https://developer.4d.com/
+[license-shield]: https://img.shields.io/github/license/mesopelagique/PIM
+[license-url]: LICENSE.md
+[discord-shield]: https://img.shields.io/badge/chat-discord-7289DA?logo=discord&style=flat
+[discord-url]: https://discord.gg/dVTqZHr
