@@ -11,6 +11,22 @@
 	"(Default Forms)": {},
 	"(Default Project Methods)": {},
 	"(Default Tables)": {},
+	"Calendar": {
+		"classes": [
+			"VCalendar",
+			"VEvent",
+			"VFreeBusy",
+			"VJournal",
+			"VTodo"
+		]
+	},
+	"Card": {
+		"classes": [
+			"MailingAddress",
+			"Photo",
+			"VCard"
+		]
+	},
 	"compiler": {
 		"methods": [
 			"Compiler_Methods",

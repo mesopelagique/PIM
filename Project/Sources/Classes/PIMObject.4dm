@@ -48,3 +48,4 @@ Function YYYYMMDD($date : Variant)->$formatted : Text
 			ASSERT:C1129(False:C215; "Wrong type of date")
 			$formatted:=""
 	End case 
+	
