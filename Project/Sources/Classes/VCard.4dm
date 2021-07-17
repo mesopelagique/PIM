@@ -9,37 +9,11 @@ Class constructor
 	This:C1470.homeAddress:=PIM.MailingAddress.new("HOME")
 	This:C1470.workAddress:=PIM.MailingAddress.new("WORK")
 	
-	
-Function YYYYMMDD($date : Variant)->$formatted : Text
-	
-	Case of 
-		: (Value type:C1509($date)=Is date:K8:7)
-			
-			// XX better way? by passing format
-			$formatted:=String:C10(Year of:C25($date))
-			If (Length:C16(String:C10(Month of:C24($date)))=1)
-				$formatted:=$formatted+"0"
-			End if 
-			$formatted:=$formatted+String:C10(Month of:C24($date))
-			If (Length:C16(String:C10(Day of:C23($date)))=1)
-				$formatted:=$formatted+"0"
-			End if 
-			$formatted:=$formatted+String:C10(Day of:C23($date))
-			
-			
-		: (Value type:C1509($date)=Is text:K8:3)
-			$formatted:=$date  // sppose formatted...
-			
-		Else 
-			ASSERT:C1129(False:C215; "Wrong type of date")
-			$formatted:=""
-	End case 
-	
 Function getFormattedName()->$formattedName : Text
 	
 	$formattedName:=This:C1470.formattedName
 	
-	If ($formattedName=Null:C1517)
+	If (Length:C16($formattedName)=0)
 		$formattedName:=""
 		
 		var $name : Variant
@@ -71,6 +45,10 @@ Function getFormattedString()->$formattedVCardString : Text
 	$formattedVCardString:="BEGIN:VCARD"+$nl
 	$formattedVCardString:=$formattedVCardString+"VERSION:"+$vCard.version+$nl
 	
+	If (($vCard.prodID#Null:C1517) & ($majorVersion>=3))
+		$formattedVCardString:=$formattedVCardString+"PRODID:"+This:C1470.e($vCard.prodID)+$nl
+	End if 
+	
 	$encodingPrefix:=Choose:C955($majorVersion>=4; ""; ";CHARSET=UTF-8")
 	$formattedName:=$vCard.getFormattedName()
 	
@@ -87,7 +65,19 @@ Function getFormattedString()->$formattedVCardString : Text
 	End if 
 	
 	If ($vCard.gender#Null:C1517)
-		$formattedVCardString:=$formattedVCardString+"GENDER:"+This:C1470.e($vCard.gender)+$nl
+		$formattedVCardString:=$formattedVCardString+"GENDER:"+This:C1470.e($vCard.gender)+$nl  // ('','M','F','O','N','U')
+	End if 
+	
+	If (($vCard.fbURL#Null:C1517) & ($majorVersion>=4))
+		$formattedVCardString:=$formattedVCardString+"FBURL:"+This:C1470.e($vCard.fbURL)+$nl
+	End if 
+	
+	If (($vCard.kind#Null:C1517) & ($majorVersion>=4))
+		$formattedVCardString:=$formattedVCardString+"KIND:"+This:C1470.e($vCard.kind)+$nl  // ('individual', 'group', 'organization' ou 'location')
+	End if 
+	
+	If (($vCard.lang#Null:C1517) & ($majorVersion>=4))
+		$formattedVCardString:=$formattedVCardString+"LANG:"+This:C1470.e($vCard.lang)+$nl
 	End if 
 	
 	If ($vCard.uid#Null:C1517)
@@ -207,7 +197,7 @@ Function getFormattedString()->$formattedVCardString : Text
 		
 		For each ($number; $collection)
 			If ($majorVersion>=4)
-				$formattedVCardString:=$formattedVCardString+"TEL;VALUE=uri;TYPE=\"voice,home\":tel:"+This:C1470.e(String:C10($number))+$nl
+				$formattedVCardString:=$formattedVCardString+"TEL;TYPE=\"voice,home\";VALUE=uri:tel:"+This:C1470.e(String:C10($number))+$nl
 			Else 
 				$formattedVCardString:=$formattedVCardString+"TEL;TYPE=HOME,VOICE:"+This:C1470.e(String:C10($number))+$nl
 			End if 
@@ -222,7 +212,7 @@ Function getFormattedString()->$formattedVCardString : Text
 		
 		For each ($number; $collection)
 			If ($majorVersion>=4)
-				$formattedVCardString:=$formattedVCardString+"TEL;VALUE=uri;TYPE=\"voice,work\":tel:"+This:C1470.e(String:C10($number))+$nl
+				$formattedVCardString:=$formattedVCardString+"TEL;TYPE=\"voice,work\";VALUE=uri:tel:"+This:C1470.e(String:C10($number))+$nl
 			Else 
 				$formattedVCardString:=$formattedVCardString+"TEL;TYPE=WORK,VOICE:"+This:C1470.e(String:C10($number))+$nl
 			End if 
@@ -237,7 +227,7 @@ Function getFormattedString()->$formattedVCardString : Text
 		
 		For each ($number; $collection)
 			If ($majorVersion>=4)
-				$formattedVCardString:=$formattedVCardString+"TEL;VALUE=uri;TYPE=\"fax,home\":tel:"+This:C1470.e(String:C10($number))+$nl
+				$formattedVCardString:=$formattedVCardString+"TEL;TYPE=\"fax,home\";VALUE=uri:tel:"+This:C1470.e(String:C10($number))+$nl
 			Else 
 				$formattedVCardString:=$formattedVCardString+"TEL;TYPE=HOME,FAX:"+This:C1470.e(String:C10($number))+$nl
 			End if 
@@ -253,7 +243,7 @@ Function getFormattedString()->$formattedVCardString : Text
 		
 		For each ($number; $collection)
 			If ($majorVersion>=4)
-				$formattedVCardString:=$formattedVCardString+"TEL;VALUE=uri;TYPE=\"fax,work\":tel:"+This:C1470.e(String:C10($number))+$nl
+				$formattedVCardString:=$formattedVCardString+"TEL;TYPE=\"fax,work\";VALUE=uri:tel:"+This:C1470.e(String:C10($number))+$nl
 			Else 
 				$formattedVCardString:=$formattedVCardString+"TEL;TYPE=WORK,FAX:"+This:C1470.e(String:C10($number))+$nl
 			End if 
@@ -269,7 +259,7 @@ Function getFormattedString()->$formattedVCardString : Text
 		
 		For each ($number; $collection)
 			If ($majorVersion>=4)
-				$formattedVCardString:=$formattedVCardString+"TEL;VALUE=uri;TYPE=\"voice,other\":tel:"+This:C1470.e(String:C10($number))+$nl
+				$formattedVCardString:=$formattedVCardString+"TEL;TYPE=\"voice,other\";VALUE=uri:tel:"+This:C1470.e(String:C10($number))+$nl
 			Else 
 				$formattedVCardString:=$formattedVCardString+"TEL;TYPE=OTHER:"+This:C1470.e(String:C10($number))+$nl
 			End if 
@@ -353,16 +343,21 @@ Function saveToFile($file : 4D:C1709.File)
 	// Send in http
 Function webSend($fileName : Text)
 	ARRAY TEXT:C222($fieldArray; 2)
+	ARRAY TEXT:C222($valueArray; 2)
+	
 	$fieldArray{1}:="Content-Type"
 	$fieldArray{2}:="Content-Disposition"
-	ARRAY TEXT:C222($valueArray; 2)
+	
 	If (Count parameters:C259>0)
-		$valueArray{1}:="text/vcard; name=\""+$fileName+"\""
-		$valueArray{2}:="inline; filename=\""+$fileName+"\""
+		$fileNameTmp:=$fileName
 	Else 
-		$valueArray{1}:="text/vcard; name=\"file.vcard\""
-		$valueArray{2}:="inline; filename=\"file.vcard\""
+		$fileNameTmp:=This:C1470.getFormattedName()
+		If (Length:C16($fileNameTmp)=0)
+			$fileNameTmp:="file"
+		End if 
 	End if 
+	$valueArray{1}:="text/vcard; name=\""+$fileNameTmp+"\""
+	$valueArray{2}:="inline; filename=\""+$fileNameTmp+"\""
 	
 	WEB SET HTTP HEADER:C660($fieldArray; $valueArray)
 	WEB SEND TEXT:C677(This:C1470.getFormattedString())

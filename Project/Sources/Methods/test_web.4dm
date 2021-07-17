@@ -13,7 +13,7 @@ $testCard.organization:="ACME Corporation"
 $testCard.photo.attachFromUrl("https://testurl"; "png")
 $testCard.logo.attachFromUrl("https://testurl"; "png")
 $testCard.workPhone:="312-555-1212"
-$testCard.homePhone:="312-555-1313"
+$testCard.homePhone:="0644555"
 $testCard.cellPhone:="12345678900"
 $testCard.pagerPhone:="312-555-1515"
 $testCard.homeFax:="312-555-1616"
