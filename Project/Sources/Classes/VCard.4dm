@@ -344,6 +344,9 @@ Function getText()->$formattedString : Text
 Function saveToFile($file : 4D:C1709.File)
 	$file.setText(This:C1470.getText(); "UTF-8-no-bom"; Document with CRLF:K24:20)
 	
+Function getMimeType()->$type : Text
+	$type:="text/vcard"
+	
 	// Send in http
 Function webSend($fileName : Text)
 	ARRAY TEXT:C222($fieldArray; 2)
@@ -361,7 +364,7 @@ Function webSend($fileName : Text)
 			$fileNameTmp:="file"
 		End if 
 	End if 
-	$valueArray{1}:="text/vcard; name=\""+$fileNameTmp+"\""
+	$valueArray{1}:=This:C1470.getMimeType()+"; name=\""+$fileNameTmp+"\""
 	$valueArray{2}:="inline; filename=\""+$fileNameTmp+"\""
 	
 	WEB SET HTTP HEADER:C660($fieldArray; $valueArray)
@@ -467,7 +470,7 @@ Function _parse($text : Text)->$valid : Boolean
 								This:C1470[$key].push(This:C1470[$key])
 							End if 
 						Else 
-							ASSERT:C1129(False:C215; "Unknow type of email in object "+Value type:C1509(This:C1470[$key]))
+							ASSERT:C1129(False:C215; "Unknow type of email in object "+String:C10(Value type:C1509(This:C1470[$key])))
 					End case 
 					
 					
@@ -508,7 +511,7 @@ Function _parse($text : Text)->$valid : Boolean
 								This:C1470[$key].push(This:C1470[$key])
 							End if 
 						Else 
-							ASSERT:C1129(False:C215; "Unknow type of email in object "+Value type:C1509(This:C1470[$key]))
+							ASSERT:C1129(False:C215; "Unknow type of email in object "+String:C10(Value type:C1509(This:C1470[$key])))
 					End case 
 					
 					

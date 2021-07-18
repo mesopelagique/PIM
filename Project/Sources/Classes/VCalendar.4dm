@@ -29,6 +29,9 @@ Function getText()->$formattedString : Text
 Function saveToFile($file : 4D:C1709.File)
 	$file.setText(This:C1470.getText(); "UTF-8-no-bom"; Document with CRLF:K24:20)
 	
+Function getMimeType()->$type : Text
+	$type:="text/calendar"
+	
 	// Send in http
 Function webSend($fileName : Text)
 	ARRAY TEXT:C222($fieldArray; 2)
@@ -37,7 +40,7 @@ Function webSend($fileName : Text)
 	$fieldArray{1}:="Content-Type"
 	$fieldArray{2}:="Content-Disposition"
 	
-	$valueArray{1}:="text/calendar; name=\""+$fileName+"\""
+	$valueArray{1}:=This:C1470.getMimeType()+"; name=\""+$fileName+"\""
 	$valueArray{2}:="inline; filename=\""+$fileName+"\""
 	
 	WEB SET HTTP HEADER:C660($fieldArray; $valueArray)
