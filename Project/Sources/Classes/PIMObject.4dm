@@ -49,6 +49,13 @@ Function YYYYMMDD($date : Variant)->$formatted : Text
 			$formatted:=""
 	End case 
 	
+Function DateFromYYYYMMDD($text : Text)->$date : Date
+	If (Length:C16($text)=8)
+		
+		$date:=Date:C102(Substring:C12($text; 1; 4)+"-"+Substring:C12($text; 5; 2)+"-"+Substring:C12($text; 7; 2)+"T00:00:00")
+		
+	End if 
+	
 Function getFormattedDateTime($date : Date; $time : Time)->$formatted : Text
 	$formatted:=Replace string:C233(Replace string:C233(String:C10($date; ISO date GMT:K1:10; $time); "-"; ""); ":"; "")
 	

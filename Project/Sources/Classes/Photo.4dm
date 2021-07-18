@@ -40,3 +40,23 @@ Function getFormattedString($majorVersion : Integer)->$formattedPhoto : Text
 	End case 
 	
 	$formattedPhoto:=This:C1470.type+$params+This:C1470.mediaType+":"+This:C1470.e(This:C1470.url)+This:C1470.nl()
+	
+Function _parse($line : Text)
+	var $key; $keyClean; $value : Text
+	$key:=Split string:C1554($line; ":")[0]
+	$value:=Split string:C1554($line; ":")[1]  // OPTI: split one time
+	
+	$keyClean:=Split string:C1554($key; ";")[0]
+	If (Asserted:C1132($keyClean=This:C1470.type; "wrong type"))
+		
+		If (($value="https") | ($value="http"))  // maybe other scheme 
+			$value:=$value+":"+Split string:C1554($line; ":")[2]  // maybe more?
+			This:C1470.url:=$value
+			This:C1470.base64:=False:C215
+		Else 
+			This:C1470.base64:=True:C214
+		End if 
+		
+		//TODO This.mediaType
+		
+	End if 

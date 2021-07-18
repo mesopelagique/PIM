@@ -107,52 +107,64 @@ While (_.describe(".getFormattedString"))
 		_.expect(_getValueByFieldName("BDAY"; $lines)).to(_.beEqualTo("20181201"))
 	End while 
 	
+	While (_.it("should format anniversary as 20181201"))
+		_.expect(_getValueByFieldName("ANNIVERSARY"; $lines)).to(_.beEqualTo("20181201"))
+	End while 
+	
+	While (_.it("should not crash when cellPhone is a large number, using 12345678900"))
+		$testCard.cellPhone:=12345678900
+		$testCard.getFormattedString()  // must not raised? // TODO better catching
+	End while 
+	
+	While (_.it("should have UID set as test value: "+$TEST_VALUE_UID))
+		_.expect(_getValueByFieldName("UID"; $lines)).to(_.beEqualTo($TEST_VALUE_UID))
+	End while 
+	
+	While (_.it("should end with END:VCARD"))
+		_.expect($lines.length).to(_.beGreaterThan(2))
+		If ($lines.length>2)
+			_.expect($lines[$lines.length-2]).to(_.beEqualTo("END:VCARD"))
+		End if 
+	End while 
+	
 End while 
 
-While (_.it("should format anniversary as 20181201"))
-	_.expect(_getValueByFieldName("ANNIVERSARY"; $lines)).to(_.beEqualTo("20181201"))
-End while 
 
-While (_.it("should not crash when cellPhone is a large number, using 12345678900"))
-	$testCard.cellPhone:=12345678900
-	$testCard.getFormattedString()  // must not raised? // TODO better catching
-End while 
-
-While (_.it("should have UID set as test value: "+$TEST_VALUE_UID))
-	_.expect(_getValueByFieldName("UID"; $lines)).to(_.beEqualTo($TEST_VALUE_UID))
-End while 
-
-While (_.it("should end with END:VCARD"))
-	_.expect($lines.length).to(_.beGreaterThan(2))
-	If ($lines.length>2)
-		_.expect($lines[$lines.length-2]).to(_.beEqualTo("END:VCARD"))
-	End if 
-End while 
-
-While (_.it("should save to file"))
+While (_.describe(".save and parse"))
+	
 	var $testFile; $testFileTmp : Object
 	$testFile:=Folder:C1567(fk resources folder:K87:11).file("test/testCard.vcf")
 	$testFileTmp:=Folder:C1567(Temporary folder:C486; fk platform path:K87:2).file("testCard.vcf")
-	If ($testFileTmp.exists)
-		$testFileTmp.delete()
-	End if 
-	$testCard.saveToFile($testFileTmp)
 	
-	ASSERT:C1129($testFileTmp.exists)
-	//ASSERT($testFileTmp.getText()=$testFile.getText()) // could not test without removing line REV:
-	
-	If (Shift down:C543)
-		// to test
-		If (Windows Ctrl down:C562)
-			// to import it
-			OPEN URL:C673($testFileTmp.platformPath)
-		Else 
-			// to reveal it
-			SHOW ON DISK:C922($testFileTmp.platformPath)
+	While (_.it("should save to file"))
+		If ($testFileTmp.exists)
+			$testFileTmp.delete()
 		End if 
-	Else 
-		// clean
-		$testFileTmp.delete()
-	End if 
+		$testCard.saveToFile($testFileTmp)
+		
+		ASSERT:C1129($testFileTmp.exists)
+		//ASSERT($testFileTmp.getText()=$testFile.getText()) // could not test without removing line REV:
+		
+		If (Shift down:C543)
+			// to test
+			If (Windows Ctrl down:C562)
+				// to import it
+				OPEN URL:C673($testFileTmp.platformPath)
+			Else 
+				// to reveal it
+				SHOW ON DISK:C922($testFileTmp.platformPath)
+			End if 
+		Else 
+			// clean
+			$testFileTmp.delete()
+		End if 
+	End while 
+	
+	While (_.it("should parse to the file"))
+		
+		$testCard:=PIM.VCard.new()
+		$testCard._parseFile($testFile)
+		
+	End while 
+	
 End while 
-

@@ -60,8 +60,8 @@ Function getFormattedString()->$formattedVCardString : Text
 		This:C1470.e($vCard.namePrefix)+";"+\
 		This:C1470.e($vCard.nameSuffix)+$nl
 	
-	If (($vCard.nickname#Null:C1517) & ($majorVersion>=3))
-		$formattedVCardString:=$formattedVCardString+"NICKNAME"+$encodingPrefix+":"+This:C1470.e($vCard.nickname)+$nl
+	If (($vCard.nickName#Null:C1517) & ($majorVersion>=3))
+		$formattedVCardString:=$formattedVCardString+"NICKNAME"+$encodingPrefix+":"+This:C1470.e($vCard.nickName)+$nl
 	End if 
 	
 	If ($vCard.gender#Null:C1517)
@@ -327,7 +327,11 @@ Function getFormattedString()->$formattedVCardString : Text
 		End if 
 	End if 
 	
-	$formattedVCardString:=$formattedVCardString+"REV:"+This:C1470.getFormattedDateTime(Current date:C33; Current time:C178)+$nl
+	If (This:C1470.rev#Null:C1517)
+		$formattedVCardString:=$formattedVCardString+"REV:"+This:C1470.rev+$nl
+	Else 
+		$formattedVCardString:=$formattedVCardString+"REV:"+This:C1470.getFormattedDateTime(Current date:C33; Current time:C178)+$nl
+	End if 
 	
 	If (Bool:C1537($vCard.isOrganization))
 		$formattedVCardString:=$formattedVCardString+"X-ABShowAs:COMPANY"+$nl
@@ -370,4 +374,170 @@ Function _getMajorVersion()->$majorVersion
 	Else 
 		$majorVersion:=4
 	End if 
+	
+	// try to implement parsing
+Function _parseFile($file : 4D:C1709.File)->$valid : Boolean
+	$valid:=This:C1470._parse($file.getText("UTF-8-no-bom"; Document with CRLF:K24:20))
+	
+Function _parse($text : Text)->$valid : Boolean
+	var $params : Object
+	var $lines; $lineSplit; $keySplit; $paramSplit : Collection
+	$lines:=Split string:C1554($text; "\r\n")
+	var $line; $key; $value; $keyClean; $param : Text
+	$valid:=True:C214
+	For each ($line; $lines) Until (Not:C34($valid))
+		
+		$lineSplit:=Split string:C1554($line; ":")
+		If ($lineSplit.length>1)
+			
+			$key:=$lineSplit[0]
+			$value:=$lineSplit[1]
+			
+			$keySplit:=Split string:C1554($key; ";")
+			$keyClean:=$keySplit.shift()
+			$params:=New object:C1471
+			If ($keySplit.length>0)
+				For each ($param; $keySplit)
+					$paramSplit:=Split string:C1554($param; "=")
+					If ($paramSplit.length>1)
+						$params[Lowercase:C14($paramSplit[0])]:=$paramSplit[1]
+					End if 
+				End for each 
+			End if 
+			
+			Case of 
+				: ($key="BEGIN")
+					$valid:=($value="VCARD")
+					// stop immediately if not vcard
+					// maybe other fields to check like version etc...
+				: ($key="END")
+					// nothing
+				: ($key="VERSION")
+					This:C1470.version:=$value  // check it? 3.0 4.0 and stop if not valid
+				: ($keyClean="FN")
+					// cannot decompose?
+				: ($keyClean="N")
+					// cannot decompose?
+				: ($keyClean="NICKNAME")
+					This:C1470.nickName:=$value  // XXX maybe add key mapping for simple value like that
+				: ($keyClean="GENDER")
+					This:C1470.gender:=$value
+				: ($keyClean="UID")
+					This:C1470.uid:=$value
+				: ($keyClean="TITLE")
+					This:C1470.title:=$value
+				: ($keyClean="ROLE")
+					This:C1470.role:=$value
+				: ($keyClean="ORG")
+					This:C1470.organization:=$value
+				: ($keyClean="URL")
+					If (($value="https") | ($value="http"))  // maybe other scheme 
+						$value:=$value+":"+Split string:C1554($line; ":")[2]  // maybe more? so use position instead
+					End if 
+					If (String:C10($params.type)="WORK")
+						This:C1470.workUrl:=$value
+					Else 
+						This:C1470.url:=$value
+					End if 
+				: ($keyClean="NOTE")
+					This:C1470.note:=$value  // TODO check if need to decode (other fields too)
+				: ($keyClean="BDAY")
+					This:C1470.birthday:=This:C1470.DateFromYYYYMMDD($value)
+				: ($keyClean="ANNIVERSARY")
+					This:C1470.anniversary:=This:C1470.DateFromYYYYMMDD($value)
+				: ($keyClean="EMAIL")
+					$key:="email"
+					Case of 
+						: (Position:C15("work"; $params.type)>0)
+							$key:="workEmail"
+						: (Position:C15("other"; $params.type)>0)
+							$key:="otherEmail"
+					End case 
+					
+					// this following code will merge, if there is already tel, no override reset
+					Case of 
+						: (This:C1470[$key]=Null:C1517)
+							This:C1470[$key]:=$value
+						: (Value type:C1509(This:C1470[$key])=Is text:K8:3)
+							If (This:C1470[$key]#$value)  // no duplicate
+								This:C1470[$key]:=New collection:C1472(This:C1470[$key]; $value)
+							End if 
+						: (Value type:C1509(This:C1470[$key])=Is collection:K8:32)
+							If (This:C1470[$key].indexOf($value)<0)  // no duplicate
+								This:C1470[$key].push(This:C1470[$key])
+							End if 
+						Else 
+							ASSERT:C1129(False:C215; "Unknow type of email in object "+Value type:C1509(This:C1470[$key]))
+					End case 
+					
+					
+				: ($keyClean="TEL")
+					
+					$key:="cellPhone"
+					Case of 
+						: (Position:C15("pager"; $params.type)>0)
+							$key:="pagerPhone"
+						: (Position:C15("work"; $params.type)>0)
+							$key:="workPhone"
+							If (Position:C15("fax"; $params.type)>0)
+								$key:="workFax"
+							End if 
+						: (Position:C15("home"; $params.type)>0)
+							$key:="homePhone"
+							If (Position:C15("fax"; $params.type)>0)
+								$key:="homeFax"
+							End if 
+						: (Position:C15("other"; $params.type)>0)
+							$key:="otherPhone"
+					End case 
+					
+					// this following code will merge, if there is already tel, no override reset
+					Case of 
+						: (This:C1470[$key]=Null:C1517)
+							This:C1470[$key]:=$value
+						: (Value type:C1509(This:C1470[$key])=Is text:K8:3)
+							If (This:C1470[$key]#$value)  // no duplicate
+								This:C1470[$key]:=New collection:C1472(This:C1470[$key]; $value)
+							End if 
+						: (Value type:C1509(This:C1470[$key])=Is real:K8:4)
+							If (String:C10(This:C1470[$key])#$value)  // no duplicate
+								This:C1470[$key]:=New collection:C1472(This:C1470[$key]; $value)
+							End if 
+						: (Value type:C1509(This:C1470[$key])=Is collection:K8:32)
+							If (This:C1470[$key].indexOf($value)<0)  // no duplicate
+								This:C1470[$key].push(This:C1470[$key])
+							End if 
+						Else 
+							ASSERT:C1129(False:C215; "Unknow type of email in object "+Value type:C1509(This:C1470[$key]))
+					End case 
+					
+					
+				: ($keyClean="LABEL")
+					// TODO labrl with ADDRr?
+					// TODO get TYPE in $params.type
+				: ($keyClean="ADR")
+					// TODO labrl with LABEL
+				: ($keyClean="LOGO")
+					This:C1470.logo._parse($line)
+				: ($keyClean="PHOTO")
+					This:C1470.photo._parse($line)
+				: ($keyClean="X-SOCIALPROFILE")
+					If (($value="https") | ($value="http"))  // maybe other scheme 
+						$value:=$value+":"+Split string:C1554($line; ":")[2]  // maybe more? so use position instead
+					End if 
+					This:C1470.socialUrls[$params.type]:=$value
+				: ($keyClean="SOURCE")
+					If (($value="https") | ($value="http"))  // maybe other scheme 
+						$value:=$value+":"+Split string:C1554($line; ":")[2]  // maybe more? so use position instead
+					End if 
+					This:C1470.source:=$value
+					
+				: ($keyClean="REV")
+					This:C1470.rev:=$value
+				Else 
+					ASSERT:C1129(False:C215; "Not yet implemented VCard key "+$keyClean)
+			End case 
+		End if 
+		
+	End for each 
 	
