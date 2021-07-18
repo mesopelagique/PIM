@@ -2,7 +2,7 @@ Class extends PIMObject
 
 Class constructor
 	
-Function getFormattedString()->$formattedString : Text
+Function getText()->$formattedString : Text
 	
 	var $nl : Text
 	$nl:=This:C1470.nl()

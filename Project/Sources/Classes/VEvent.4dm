@@ -2,7 +2,7 @@ Class extends PIMObject
 
 Class constructor
 	
-Function getFormattedString()->$formattedString : Text
+Function getText()->$formattedString : Text
 	
 	var $nl : Text
 	$nl:=This:C1470.nl()
@@ -44,7 +44,7 @@ Function getFormattedString()->$formattedString : Text
 	If (Value type:C1509(This:C1470.alarms)=Is collection:K8:32)
 		var $event : Object
 		For each ($event; This:C1470.alarms)
-			$formattedString:=$formattedString+$event.getFormattedString()
+			$formattedString:=$formattedString+$event.getText()
 		End for each 
 	End if 
 	

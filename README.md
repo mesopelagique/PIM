@@ -38,7 +38,7 @@ $vCard.saveToFile(Folder(...).file("eric-marchand.vcf"))
 ### get as formatted string
 
 ```4d
-$vCard.getFormattedString()
+$vCard.getText()
 ```
 
 ### send it when responding to http request
@@ -100,7 +100,7 @@ TODO
 ### get as formatted string
 
 ```4d
-$calendar.getFormattedString()
+$calendar.getText()
 ```
 
 ### send it when responding to http request

@@ -10,7 +10,7 @@ Class constructor($type : Text)
 	This:C1470.postalCode:=""
 	This:C1470.countryRegion:=""
 	
-Function getFormattedString($encodingPrefix : Text; $majorVersion : Integer)->$formattedAddress : Text
+Function getText($encodingPrefix : Text; $majorVersion : Integer)->$formattedAddress : Text
 	var $nl : Text
 	$nl:=This:C1470.nl()
 	

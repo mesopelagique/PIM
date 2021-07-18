@@ -28,7 +28,7 @@ Function embedFromString($base64String : Text; $mediaType : Text){
 	This:C1470.url:=$base64String
 	This:C1470.base64:=True:C214
 	
-Function getFormattedString($majorVersion : Integer)->$formattedPhoto : Text
+Function getText($majorVersion : Integer)->$formattedPhoto : Text
 	var $params : Text
 	Case of 
 		: ($majorVersion>=4)

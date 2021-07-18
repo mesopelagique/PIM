@@ -5,7 +5,7 @@ Class constructor
 	This:C1470.version:="2.0"
 	This:C1470.events:=New collection:C1472
 	
-Function getFormattedString()->$formattedString : Text
+Function getText()->$formattedString : Text
 	
 	var $nl : Text
 	$nl:=This:C1470.nl()
@@ -20,14 +20,14 @@ Function getFormattedString()->$formattedString : Text
 	
 	var $event : Object
 	For each ($event; This:C1470.events)
-		$formattedString:=$formattedString+$event.getFormattedString()
+		$formattedString:=$formattedString+$event.getText()
 	End for each 
 	
 	$formattedString:=$formattedString+"END:VCALENDAR"+$nl
 	
 	// Save to file
 Function saveToFile($file : 4D:C1709.File)
-	$file.setText(This:C1470.getFormattedString(); "UTF-8-no-bom"; Document with CRLF:K24:20)
+	$file.setText(This:C1470.getText(); "UTF-8-no-bom"; Document with CRLF:K24:20)
 	
 	// Send in http
 Function webSend($fileName : Text)
@@ -41,7 +41,7 @@ Function webSend($fileName : Text)
 	$valueArray{2}:="inline; filename=\""+$fileName+"\""
 	
 	WEB SET HTTP HEADER:C660($fieldArray; $valueArray)
-	WEB SEND TEXT:C677(This:C1470.getFormattedString())
+	WEB SEND TEXT:C677(This:C1470.getText())
 	
 	// get major part of versio
 Function _getMajorVersion()->$majorVersion

@@ -57,14 +57,14 @@ $testCard.socialUrls.flickr:="https://flickr/johndoe"
 $testCard.socialUrls.custom:="https://custom/johndoe"
 
 var $vCardString : Text
-$vCardString:=$testCard.getFormattedString()
+$vCardString:=$testCard.getText()
 
 var $lines : Collection
 $lines:=Split string:C1554($vCardString; "\r\n")
 
 var _ : Object
 _:=spec
-While (_.describe(".getFormattedString"))
+While (_.describe(".getText"))
 	
 	While (_.it("should start with BEGIN:VCARD"))
 		
@@ -100,7 +100,7 @@ While (_.describe(".getFormattedString"))
 	
 	While (_.it("should encode numeric input as strings"))
 		$testCard.workAddress.postalCode:=12345
-		_.expect($testCard.getFormattedString()).to(_.contain("12345"))  // must not raised? // TODO better catching
+		_.expect($testCard.getText()).to(_.contain("12345"))  // must not raised? // TODO better catching
 	End while 
 	
 	While (_.it("should format birthday as 20181201"))
@@ -113,7 +113,7 @@ While (_.describe(".getFormattedString"))
 	
 	While (_.it("should not crash when cellPhone is a large number, using 12345678900"))
 		$testCard.cellPhone:=12345678900
-		$testCard.getFormattedString()  // must not raised? // TODO better catching
+		$testCard.getText()  // must not raised? // TODO better catching
 	End while 
 	
 	While (_.it("should have UID set as test value: "+$TEST_VALUE_UID))
