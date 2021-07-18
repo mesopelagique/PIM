@@ -5,6 +5,7 @@
 ![code-size][code-size]
 [![license][license-shield]][license-url]
 [![discord][discord-shield]][discord-url]
+[![sponsors][sponsors-shield]][sponsors-url]
 
 personal information manager stuff, ie. VCard and VCalendar
 
@@ -116,6 +117,18 @@ $calendar.webSend("eric-marchand.ics")
 - [ ] Parse VCard (partially implemented in `_parse` or `_parseFile` but not enough file tested)
 - [ ] Parse VCalendar
 
+## To help
+
+If you run a business and you’re using one of my projects in a revenue-generating product, it makes business sense to sponsor this open source development
+
+[![sponsors][sponsors-shield]][sponsors-url]
+
+Thank you for your support!
+
+## Other components
+
+[<img src="https://mesopelagique.github.io/quatred.png" alt="mesopelagique"/>](https://mesopelagique.github.io/)
+
 ## Acknowledgements
 
 - vcard: very inspired from js library https://github.com/enesser/vCards-js
@@ -130,3 +143,5 @@ $calendar.webSend("eric-marchand.ics")
 [license-url]: LICENSE.md
 [discord-shield]: https://img.shields.io/badge/chat-discord-7289DA?logo=discord&style=flat
 [discord-url]: https://discord.gg/dVTqZHr
+[sponsors-shield]: https://img.shields.io/github/sponsors/phimage?color=violet&logo=github
+[sponsors-url]: https://github.com/sponsors/phimage
