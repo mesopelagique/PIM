@@ -11,7 +11,9 @@ personal information manager stuff, ie. VCard and VCalendar
 
 ## VCard
 
-VCard builder class
+`VCard` builder class 
+
+[rfc6350](https://datatracker.ietf.org/doc/html/rfc6350)
 
 ### Create
 
