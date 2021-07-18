@@ -35,10 +35,10 @@ $vCard.note := "Notes on Eric"
 $vCard.saveToFile(Folder(...).file("eric-marchand.vcf"))
 ```
 
-### get as formatted string
+### get as formatted text
 
 ```4d
-$vCard.getText()
+$text:=$vCard.getText()
 ```
 
 ### send it when responding to http request
@@ -97,10 +97,10 @@ $calendar = PIM.VCalendar.new()
 
 TODO
 
-### get as formatted string
+### get as formatted text
 
 ```4d
-$calendar.getText()
+$text:=$calendar.getText()
 ```
 
 ### send it when responding to http request
