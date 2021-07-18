@@ -110,6 +110,16 @@ $text:=$calendar.getText()
 $calendar.webSend("eric-marchand.ics")
 ```
 
+## Testing
+
+To do unit test, this component use [expect](https://github.com/mesopelagique/expect) BDD/TDD component as git submodule in [`Components`](Components)
+
+When opening this database, the test component expect will be compiled by [`onStartUp`](Project/Sources/Methods/onStartUp.4dm) method with the new v19 [Compile project](https://doc.4d.com/4Dv19/4D/19/Compile-project.301-5457347.en.html) command.
+
+> 💡 If you have issue with previous version of 4D, just remove "expect" component, and test files like [test_pim](Project/Sources/Methods/test_pim.4dm)
+
+🌏 To test web, you could also launch the web server and do any request on it, a vcard will be downloaded, vcard produced by [test_web](Project/Sources/Methods/test_web.4dm)
+
 ## TODO
 
 - [ ] Fix format VCard bugs, seems to not import well with macOS calendar app
