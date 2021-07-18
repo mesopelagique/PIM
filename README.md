@@ -111,8 +111,10 @@ $calendar.webSend("eric-marchand.ics")
 
 ## TODO
 
-- Fix format VCard bugs, seems to not import well with macOS calendar app
-- Implement calendar event formatting
+- [ ] Fix format VCard bugs, seems to not import well with macOS calendar app
+- [ ] Implement calendar event formatting
+- [ ] Parse VCard (partially implemented in `_parse` or `_parseFile` but not enough file tested)
+- [ ] Parse VCalendar
 
 ## Acknowledgements
 
