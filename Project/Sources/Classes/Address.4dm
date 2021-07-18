@@ -4,6 +4,8 @@ Class constructor($type : Text)
 	Super:C1705()
 	This:C1470.type:=$type
 	This:C1470.label:=""
+	This:C1470.pobox:=""
+	This:C1470.ext:=""
 	This:C1470.street:=""
 	This:C1470.city:=""
 	This:C1470.stateProvince:=""
@@ -28,7 +30,9 @@ Function getText($encodingPrefix : Text; $majorVersion : Integer)->$formattedAdd
 		
 		If ($majorVersion>=4)
 			$formattedAddress:="ADR"+$encodingPrefix+";TYPE="+$address.type+\
-				(Choose:C955($address.label#Null:C1517; ";LABEL=\""+This:C1470.e($address.label)+"\""; ""))+":;;"+\
+				(Choose:C955($address.label#Null:C1517; ";LABEL=\""+This:C1470.e($address.label)+"\""; ""))+":"+\
+				This:C1470.e($address.pobox)+";"+\
+				This:C1470.e($address.ext)+";"+\
 				This:C1470.e($address.street)+";"+\
 				This:C1470.e($address.city)+";"+\
 				This:C1470.e($address.stateProvince)+";"+\
@@ -38,7 +42,9 @@ Function getText($encodingPrefix : Text; $majorVersion : Integer)->$formattedAdd
 			If ($address.label#Null:C1517)
 				$formattedAddress:="LABEL"+$encodingPrefix+";TYPE="+$address.type+":"+This:C1470.e($address.label)+$nl
 			End if 
-			$formattedAddress:=$formattedAddress+"ADR"+$encodingPrefix+";TYPE="+$address.type+":;;"+\
+			$formattedAddress:=$formattedAddress+"ADR"+$encodingPrefix+";TYPE="+$address.type+":"+\
+				This:C1470.e($address.pobox)+";"+\
+				This:C1470.e($address.ext)+";"+\
 				This:C1470.e($address.street)+";"+\
 				This:C1470.e($address.city)+";"+\
 				This:C1470.e($address.stateProvince)+";"+\
@@ -46,4 +52,18 @@ Function getText($encodingPrefix : Text; $majorVersion : Integer)->$formattedAdd
 				This:C1470.e($address.countryRegion)+$nl
 		End if 
 		
+	End if 
+	
+Function _parse($text : Text; $majorVersion : Integer)
+	var $data : Collection
+	$data:=Split string:C1554($text; ";")
+	
+	If ($data.length>6)
+		This:C1470.pobox:=$data[0]
+		This:C1470.ext:=$data[1]
+		This:C1470.street:=$data[2]
+		This:C1470.city:=$data[3]
+		This:C1470.stateProvince:=$data[4]
+		This:C1470.postalCode:=$data[5]
+		This:C1470.countryRegion:=$data[6]
 	End if 

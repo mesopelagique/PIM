@@ -6,8 +6,8 @@ Class constructor
 	This:C1470.photo:=PIM.Photo.new("PHOTO")
 	This:C1470.logo:=PIM.Photo.new("LOGO")
 	This:C1470.socialUrls:=New object:C1471("facebook"; ""; "linkedIn"; ""; "twitter"; ""; "flickr"; "")
-	This:C1470.homeAddress:=PIM.MailingAddress.new("HOME")
-	This:C1470.workAddress:=PIM.MailingAddress.new("WORK")
+	This:C1470.homeAddress:=PIM.Address.new("HOME")
+	This:C1470.workAddress:=PIM.Address.new("WORK")
 	
 Function getFormattedName()->$formattedName : Text
 	
@@ -371,7 +371,7 @@ Function webSend($fileName : Text)
 	WEB SEND TEXT:C677(This:C1470.getText())
 	
 	// get major part of versio
-Function _getMajorVersion()->$majorVersion
+Function _getMajorVersion()->$majorVersion : Integer
 	If (This:C1470.version#Null:C1517)
 		$majorVersion:=Num:C11(Split string:C1554(This:C1470.version; ".")[0])
 	Else 
@@ -388,6 +388,10 @@ Function _parse($text : Text)->$valid : Boolean
 	$lines:=Split string:C1554($text; "\r\n")
 	var $line; $key; $value; $keyClean; $param : Text
 	$valid:=True:C214
+	
+	var $majorVersion : Integer
+	$majorVersion:=This:C1470._getMajorVersion()  // temporary fill it
+	
 	For each ($line; $lines) Until (Not:C34($valid))
 		
 		$lineSplit:=Split string:C1554($line; ":")
@@ -407,7 +411,7 @@ Function _parse($text : Text)->$valid : Boolean
 					End if 
 				End for each 
 			End if 
-			
+			var $currentAddr : Object
 			Case of 
 				: ($key="BEGIN")
 					$valid:=($value="VCARD")
@@ -417,6 +421,7 @@ Function _parse($text : Text)->$valid : Boolean
 					// nothing
 				: ($key="VERSION")
 					This:C1470.version:=$value  // check it? 3.0 4.0 and stop if not valid
+					$majorVersion:=This:C1470._getMajorVersion()
 				: ($keyClean="FN")
 					// cannot decompose?
 				: ($keyClean="N")
@@ -516,10 +521,36 @@ Function _parse($text : Text)->$valid : Boolean
 					
 					
 				: ($keyClean="LABEL")
-					// TODO labrl with ADDRr?
-					// TODO get TYPE in $params.type
+					Case of 
+						: ($params.type="HOME")
+							$currentAddr:=This:C1470.homeAddress
+						: ($params.type="WORK")
+							$currentAddr:=This:C1470.workAddress
+						Else 
+							// unknown addr, assert?
+					End case 
+					If ($currentAddr#Null:C1517)
+						$currentAddr.label:=$value
+					End if 
+					
 				: ($keyClean="ADR")
-					// TODO labrl with LABEL
+					
+					Case of 
+						: ($params.type="HOME")
+							$currentAddr:=This:C1470.homeAddress
+						: ($params.type="WORK")
+							$currentAddr:=This:C1470.workAddress
+						Else 
+							// unknown addr, assert?
+					End case 
+					If ($currentAddr#Null:C1517)
+						If ($params.label#Null:C1517)
+							$currentAddr.label:=$params.label
+						End if 
+						$currentAddr._parse($value; $majorVersion)
+					End if 
+					
+					$currentAddr:=Null:C1517
 				: ($keyClean="LOGO")
 					This:C1470.logo._parse($line)
 				: ($keyClean="PHOTO")

@@ -23,7 +23,7 @@
 	},
 	"Card": {
 		"classes": [
-			"MailingAddress",
+			"Address",
 			"Photo",
 			"VCard"
 		]
